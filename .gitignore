@@ -1,0 +1,23 @@
+# Local launchers
+run.bat
+run.command
+run.sh
+
+# Python virtual environments
+.venv/
+venv/
+env/
+
+# Local AI/editor and environment files
+.claude/
+.cloud/
+.env/
+
+# Python cache and test artifacts
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
