@@ -1,20 +1,16 @@
 # Setup Guide
 
-This document covers everything you need to get the tool running from scratch on any OS.
-
----
+This document covers everything you need to get Voice running from scratch on any OS.
 
 ## Requirements
 
 - Python 3.9 or higher
 - A working microphone
-- Internet connection on first run only (models are downloaded once and cached)
+- An internet connection on first run only, because the models are downloaded once and cached
 
----
+## Step 1 - Create a virtual environment
 
-## Step 1 — Create a virtual environment
-
-Using a venv keeps dependencies isolated from your system Python. Recommended but not mandatory.
+Using a venv keeps dependencies isolated from your system Python. This is recommended but not required.
 
 **Windows**
 ```bat
@@ -30,9 +26,7 @@ source venv/bin/activate
 
 You should see `(venv)` at the start of your terminal prompt once activated.
 
----
-
-## Step 2 — Install dependencies
+## Step 2 - Install dependencies
 
 ```bash
 pip install -r requirements.txt
@@ -53,23 +47,19 @@ sudo dnf install portaudio-devel
 sudo pacman -S portaudio
 ```
 
-On Windows and macOS, PortAudio is bundled with the `sounddevice` wheel — no extra step needed.
+On Windows and macOS, PortAudio is bundled with the `sounddevice` wheel, so no extra step is needed.
 
----
-
-## Step 3 — Run
+## Step 3 - Run
 
 ```bash
 python app.py
 ```
 
-On first run, the tool will:
+On first run, the app will:
 
-1. Download any missing Whisper models (tiny through medium, ~2.2 GB total)
+1. Download any missing Whisper models, from base through medium, which is about 2.2 GB in total
 2. Create a platform-specific launcher file for future use
-3. Start the server and open `http://localhost:8000` in your browser automatically
-
----
+3. Start the server and open http://127.0.0.1:47891 in your browser automatically
 
 ## Using the launcher next time
 
@@ -77,17 +67,15 @@ After the first run, a launcher file is created in the project folder. Use it in
 
 | OS | File | How to use |
 |----|------|------------|
-| Windows | `run.bat` | Double-click, or drag to Desktop / taskbar |
-| macOS | `run.command` | Double-click from Finder, or drag to Dock |
-| Linux | `run.sh` | Double-click from file manager, or `./run.sh` in terminal |
+| Windows | `run.bat` | Double-click, or drag to Desktop or the taskbar |
+| macOS | `run.command` | Double-click from Finder, or drag to the Dock |
+| Linux | `run.sh` | Double-click from the file manager, or run `./run.sh` in a terminal |
 
 The launcher activates the venv automatically if one is present.
 
----
-
 ## Pre-downloading models manually
 
-Models are downloaded automatically on first run. If you want to pre-download them while on a good connection (e.g. before going offline), run this once:
+Models are downloaded automatically on first run. If you want to pre-download them while you have a good connection, run this once:
 
 ```python
 from faster_whisper import WhisperModel
@@ -96,50 +84,42 @@ for size in ["base", "small", "medium"]:
     print(f"{size} cached")
 ```
 
-Models are stored in `~/.cache/huggingface/hub/` and never re-downloaded.
-
----
+Models are stored in `~/.cache/huggingface/hub/` and are not downloaded again.
 
 ## Model reference
 
-| Model | Download size | RAM usage | Speed on i3/i5 CPU | Best for |
-|-------|-------------|-----------|---------------------|----------|
-| base | ~145 MB | ~300 MB | ~4x real-time | Everyday use (default) |
-| small | ~460 MB | ~700 MB | ~1.5x real-time | Better accuracy, mixed languages |
-| medium | ~1.5 GB | ~2.5 GB | ~0.6x real-time | Short clips where accuracy matters |
+| Model | Download size | RAM usage | Speed on an i3 or i5 CPU | Best for |
+|-------|-------------|-----------|---------------------------|----------|
+| base | about 145 MB | about 300 MB | about 4x real time | Everyday use, default option |
+| small | about 460 MB | about 700 MB | about 1.5x real time | Better accuracy for mixed languages |
+| medium | about 1.5 GB | about 2.5 GB | about 0.6x real time | Short clips where accuracy matters |
 
-**Recommendation:** start with `base`. Switch to `small` if you find it missing words, especially for Hindi/Gujarati/English mixed speech.
-
----
+**Recommendation:** start with `base`. Switch to `small` if you find it missing words, especially for Hindi, Gujarati, or English mixed speech.
 
 ## Language detection
 
-The tool uses **auto-detect** by default. Whisper identifies the language in the first few seconds of audio with ~95% accuracy and adds under 0.1s of overhead. This is the recommended setting for most use cases, especially if you mix languages mid-sentence (e.g. Hinglish or Gujarati-English).
+The app uses automatic language detection by default. Whisper identifies the language in the first few seconds of audio with about 95 percent accuracy and adds less than 0.1 seconds of overhead. This is the recommended setting for most use cases, especially if you mix languages mid-sentence, such as Hinglish or Gujarati-English.
 
 Manual language selection is useful when:
 - Recording very short clips under 3 seconds
 - The detector is consistently picking the wrong language for a specific accent
 
----
-
 ## Troubleshooting
 
 **Microphone not detected**
-Make sure your browser has microphone permission for `localhost`. Check your OS audio input settings to confirm the correct mic is set as default.
+Make sure your browser has microphone permission for `localhost`. Check your OS audio input settings to confirm the correct mic is set as the default.
 
 **`sounddevice` install fails on Linux**
-Install PortAudio first (see Step 2), then re-run `pip install -r requirements.txt`.
+Install PortAudio first, as described in Step 2, then run `pip install -r requirements.txt` again.
 
-**Server starts but browser does not open**
-Navigate manually to `http://localhost:8000`. This can happen if your default browser takes too long to launch before the auto-open timeout.
+**The server starts but the browser does not open**
+Navigate manually to http://127.0.0.1:47891. This can happen if your default browser takes too long to launch before the auto-open timeout.
 
 **Model download is slow or fails**
-The HuggingFace CDN can be slow in some regions. Try again or use a VPN. Downloaded portions are cached so a failed download will resume from where it left off on the next run.
+The Hugging Face CDN can be slow in some regions. Try again or use a VPN. Downloaded portions are cached, so a failed download will resume from where it left off on the next run.
 
-**Port 8000 already in use**
-Another process is using the port. Either stop it, or edit the last line of `app.py` and change `port=8000` to any free port such as `8001`.
-
----
+**Port 47891 is already in use**
+Another process is using the port. Either stop it or edit the last line of `app.py` and change `port=47891` to any free port such as `47892`.
 
 ## Uninstalling
 

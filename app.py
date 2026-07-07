@@ -8,7 +8,14 @@ import time
 import webbrowser
 
 import numpy as np
-import sounddevice as sd
+# `sounddevice` is optional at runtime; make import tolerant so the HTTP server
+# can start even on systems without audio capture support. Code that needs the
+# microphone should check `sd is not None` before using it.
+try:
+    import sounddevice as sd
+except Exception:
+    sd = None
+    print("[startup] warning: 'sounddevice' not available; microphone features disabled.")
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -16,6 +23,13 @@ from faster_whisper import WhisperModel
 import uvicorn
 
 app = FastAPI(title="Voice")
+
+# Serve static assets (icons, JS, CSS, etc.) from the bundled `assets` folder
+assets_path = os.path.join(os.path.dirname(__file__), "assets")
+if os.path.isdir(assets_path):
+    app.mount("/assets", StaticFiles(directory=assets_path), name="assets")
+else:
+    print(f"[startup] assets folder not found: {assets_path}")
 
 # Models to ensure are downloaded on startup (base -> medium)
 PREDOWNLOAD_MODELS = ["base", "small", "medium"]  # large-v3 excluded: too slow for CPU

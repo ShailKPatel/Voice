@@ -1,20 +1,16 @@
-# local-speech-to-text
+# Voice
 
-Offline, OS-independent speech-to-text tool using Faster-Whisper + FastAPI + a browser UI.
+Voice is an offline, OS-independent speech-to-text app built with Faster-Whisper, FastAPI, and a browser-based interface.
 
 No cloud, no API keys, no subscriptions. Everything runs locally on your machine.
-
----
 
 ## What it does
 
 - Record audio directly from your browser
-- Transcribes using Faster-Whisper (runs fully on CPU)
-- Supports 99 languages with auto-detection
-- Persistent history with search across all past recordings
-- Copy, edit, and download transcripts
-
----
+- Transcribe speech locally with Faster-Whisper
+- Support 99 languages with automatic language detection
+- Keep a searchable history of past recordings
+- Copy and edit transcripts
 
 ## Quick start
 
@@ -27,32 +23,30 @@ pip install -r requirements.txt
 python app.py
 ```
 
-The browser opens automatically at `http://localhost:8000`.
-A platform-specific launcher (`run.bat` / `run.sh` / `run.command`) is created on first run — use that next time instead.
+The app opens automatically at http://127.0.0.1:47891. A platform-specific launcher is created on first run: `run.bat` on Windows, `run.sh` on Linux, and `run.command` on macOS. Use that launcher next time.
 
 For full setup instructions including virtual environments, PortAudio, and model pre-downloading, see [SETUP.md](SETUP.md).
-
----
 
 ## Project structure
 
 ```
-stt_tool/
-  app.py            # FastAPI backend + WebSocket transcription
-  index.html        # Frontend UI (served by FastAPI)
+Voice/
+  app.py            # FastAPI backend and WebSocket transcription service
+  index.html        # Frontend UI served by FastAPI
+  launch.sh         # Helper launcher for Linux
   requirements.txt  # Python dependencies
-  README.md         # This file
+  README.md         # Project overview
   SETUP.md          # Detailed setup guide
-  run.bat           # Windows launcher (auto-generated)
-  run.sh            # Linux launcher (auto-generated)
-  run.command       # macOS launcher (auto-generated)
+  LICENSE           # MIT license
+  assets/           # App icons and static assets
+  run.sh            # Linux launcher created on first run
+  run.bat           # Windows launcher created on first run
+  run.command       # macOS launcher created on first run
 ```
-
----
 
 ## Tech stack
 
-- [Faster-Whisper](https://github.com/SYSTRAN/faster-whisper) — CTranslate2-based Whisper inference, 4x faster than original
-- [FastAPI](https://fastapi.tiangolo.com/) — backend and WebSocket server
-- [Uvicorn](https://www.uvicorn.org/) — ASGI server
-- Vanilla JS frontend, no frameworks
+- [Faster-Whisper](https://github.com/SYSTRAN/faster-whisper) for local Whisper inference
+- [FastAPI](https://fastapi.tiangolo.com/) for the backend and WebSocket server
+- [Uvicorn](https://www.uvicorn.org/) as the ASGI server
+- Vanilla JavaScript for the frontend, with no framework

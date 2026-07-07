@@ -4,8 +4,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico" />
   <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
-  <link rel="icon" type="image/png" href="/assets/favicon.png" />
+  <link rel="icon" type="image/png" sizes="64x64" href="/assets/favicon.png" />
   <title>Voice</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -21,6 +22,11 @@
       --sidebar-text-muted: #666;
       --sidebar-hover: rgba(255,255,255,0.06);
       --sidebar-active: rgba(255,255,255,0.11);
+      --sidebar-toggle-bg: #2a2a2a;
+      --sidebar-toggle-bg-hover: #343434;
+      --sidebar-toggle-border: rgba(255,255,255,0.16);
+      --sidebar-toggle-icon: #f5f5f5;
+      --sidebar-toggle-shadow: rgba(0,0,0,0.2);
       --border: rgba(255,255,255,0.1);
       --border-strong: rgba(255,255,255,0.16);
       --text: #f2f2f2;
@@ -48,6 +54,11 @@
       --sidebar-text-muted: #999;
       --sidebar-hover: rgba(0,0,0,0.04);
       --sidebar-active: rgba(0,0,0,0.07);
+      --sidebar-toggle-bg: #7a7a7a;
+      --sidebar-toggle-bg-hover: #6f6f6f;
+      --sidebar-toggle-border: rgba(0,0,0,0.12);
+      --sidebar-toggle-icon: #ffffff;
+      --sidebar-toggle-shadow: rgba(0,0,0,0.06);
       --border: rgba(0,0,0,0.08);
       --border-strong: rgba(0,0,0,0.13);
       --text: #111;
@@ -119,14 +130,26 @@
       cursor: pointer;
       color: var(--sidebar-text-muted);
       padding: 4px;
-      border-radius: 4px;
+      border-radius: 6px;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: color 0.12s;
+      transition: color 0.12s, background 0.12s, border-color 0.12s, box-shadow 0.12s;
     }
 
     .sidebar-header-btn:hover { color: var(--sidebar-text); }
+
+    [data-theme="light"] .sidebar-header-btn {
+      background: rgba(255,255,255,0.82);
+      border: 1px solid rgba(0,0,0,0.06);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    }
+
+    [data-theme="light"] .sidebar-header-btn:hover {
+      color: var(--text);
+      background: rgba(255,255,255,0.96);
+      border-color: rgba(0,0,0,0.1);
+    }
 
     .sidebar-header-actions {
       display: flex;
@@ -141,8 +164,10 @@
     }
 
     [data-theme="light"] .sidebar-header-btn.active {
-      background: rgba(99, 85, 199, 0.12);
+      background: var(--accent-light);
       color: var(--accent);
+      border-color: var(--accent-border);
+      box-shadow: 0 1px 3px rgba(99, 85, 199, 0.12);
     }
 
     .sidebar-search {
@@ -574,6 +599,48 @@
     .status-bar.success::before { background: var(--success); }
     .status-bar.loading::before { background: var(--accent); animation: pulse-dot 1s ease-in-out infinite; }
 
+    .completion-toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 14px;
+      border-radius: 999px;
+      background: rgba(24, 24, 24, 0.96);
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.28);
+      backdrop-filter: blur(8px);
+      opacity: 0;
+      transform: translateY(8px);
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      z-index: 2000;
+    }
+
+    .completion-toast.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .completion-toast .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 0 4px rgba(74, 222, 128, 0.16);
+      flex-shrink: 0;
+    }
+
+    [data-theme="light"] .completion-toast {
+      background: rgba(255,255,255,0.96);
+      color: var(--text);
+      border-color: rgba(0,0,0,0.08);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+    }
+
     @keyframes pulse-dot {
       0%, 100% { opacity: 1; }
       50%       { opacity: 0.3; }
@@ -617,12 +684,23 @@
       top: 14px;
       left: 14px;
       z-index: 100;
-      background: #242424;
-      border: 1px solid var(--border);
+      background: var(--sidebar-toggle-bg);
+      border: 1px solid var(--sidebar-toggle-border);
       border-radius: 7px;
       padding: 7px 9px;
       cursor: pointer;
-      color: var(--sidebar-text);
+      color: var(--sidebar-toggle-icon);
+      box-shadow: 0 2px 6px var(--sidebar-toggle-shadow);
+      transition: background 0.12s, border-color 0.12s, color 0.12s, transform 0.12s;
+    }
+
+    .sidebar-toggle:hover {
+      background: var(--sidebar-toggle-bg-hover);
+      transform: translateY(-1px);
+    }
+
+    .sidebar-toggle svg {
+      display: block;
     }
 
     @media (max-width: 700px) {
@@ -776,6 +854,10 @@
   </main>
 
   <div class="status-bar" id="status-bar">Connecting...</div>
+  <div class="completion-toast" id="completion-toast" aria-live="polite">
+    <span class="dot"></span>
+    <span>Transcription complete</span>
+  </div>
 
   <script>
     const recordBtn = document.getElementById("record-btn");
@@ -798,6 +880,7 @@
     const sidebarSettingsPanel = document.getElementById("sidebar-settings-panel");
     const sidebarViewToggle = document.getElementById("sidebar-view-toggle");
     const sidebarViewIcon = document.getElementById("sidebar-view-icon");
+    const completionToast = document.getElementById("completion-toast");
 
     let ws, mediaRecorder, audioChunks = [];
     let audioContext, analyser, sourceNode;
@@ -807,8 +890,11 @@
     let activeId = null;
     let transcribeStart = 0;
     let history = [];
-    let sidebarView = "settings";
+    let sidebarView = "history";
     let themePreference = localStorage.getItem("themePreference") || "system";
+    let completionNoticeShown = false;
+    let completionTitleTimer = null;
+    const defaultTitle = document.title;
 
     try { history = JSON.parse(localStorage.getItem("stt_history") || "[]"); } catch (e) { history = []; }
     try {
@@ -817,6 +903,52 @@
       modelSelect.value = savedModel;
       langSelect.value = savedLang;
     } catch (e) {}
+
+    function resetCompletionNotice() {
+      completionNoticeShown = false;
+      clearTimeout(completionTitleTimer);
+      document.title = defaultTitle;
+      completionToast.classList.remove("visible");
+    }
+
+    function showCompletionNotice() {
+      if (completionNoticeShown) return;
+      completionNoticeShown = true;
+      clearTimeout(completionTitleTimer);
+      document.title = "Voice • Done";
+      completionToast.classList.add("visible");
+      completionTitleTimer = setTimeout(() => {
+        document.title = defaultTitle;
+        completionToast.classList.remove("visible");
+      }, 6000);
+
+      if ("Notification" in window) {
+        if (Notification.permission === "granted") {
+          try {
+            new Notification("Voice transcription complete", {
+              body: "Your transcript is ready.",
+              icon: "/assets/favicon.png"
+            });
+          } catch (e) {}
+        } else if (Notification.permission === "default") {
+          Notification.requestPermission().catch(() => {});
+        }
+      }
+    }
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") {
+        clearTimeout(completionTitleTimer);
+        document.title = defaultTitle;
+        completionToast.classList.remove("visible");
+      }
+    });
+
+    window.addEventListener("focus", () => {
+      clearTimeout(completionTitleTimer);
+      document.title = defaultTitle;
+      completionToast.classList.remove("visible");
+    });
 
     // ── WebSocket ──
     function connectWS() {
@@ -828,12 +960,14 @@
         const msg = JSON.parse(e.data);
         if (msg.status === "processing") {
           transcribeStart = performance.now();
+          resetCompletionNotice();
           setStatus("Transcribing...", "loading");
         } else if (msg.status === "done") {
           const r = msg.result;
           const existing = transcriptBox.value.trim();
           transcriptBox.value = existing ? existing + "\n\n" + r.text : r.text;
           addHistory(r.text, r.language, r.duration, r.language_probability);
+          showCompletionNotice();
           setStatus("Done", "success");
           setProcessing(false);
         } else if (msg.status === "error") {
@@ -1072,11 +1206,7 @@
     }
 
     document.getElementById("sidebar-toggle").addEventListener("click", () => {
-      if (window.innerWidth <= 700) {
-        document.getElementById("sidebar").classList.toggle("open");
-      } else {
-        document.body.classList.remove("sidebar-hidden");
-      }
+      toggleSidebar();
     });
 
     function toggleSidebar() {
@@ -1123,6 +1253,7 @@
     });
 
     applyTheme(themePreference);
+    document.body.classList.add("sidebar-hidden");
 
     showSidebarView(sidebarView);
     renderHistory();
