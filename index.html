@@ -810,6 +810,15 @@
           <option value="dark">Dark</option>
         </select>
       </div>
+      <div class="field">
+        <label>Notifications</label>
+        <select id="notifications-select">
+          <option value="auto">Auto (inactive tab only)</option>
+          <option value="always">Always</option>
+          <option value="off">Off</option>
+        </select>
+        <div class="settings-note">Completion alerts appear only when this tab is not active unless you choose Always.</div>
+      </div>
     </div>
     <div class="sidebar-footer" id="sidebar-footer">
       <span id="history-count">0 recordings</span>
@@ -872,6 +881,7 @@
     const modelSelect = document.getElementById("model-select");
     const langSelect = document.getElementById("lang-select");
     const themeSelect = document.getElementById("theme-select");
+    const notificationsSelect = document.getElementById("notifications-select");
     const searchInput = document.getElementById("search-input");
     const historyCount = document.getElementById("history-count");
     const sidebarTitle = document.getElementById("sidebar-title");
@@ -892,6 +902,7 @@
     let history = [];
     let sidebarView = "history";
     let themePreference = localStorage.getItem("themePreference") || "system";
+    let notificationPreference = localStorage.getItem("stt_notification_preference") || "auto";
     let completionNoticeShown = false;
     let completionTitleTimer = null;
     const defaultTitle = document.title;
@@ -900,8 +911,11 @@
     try {
       const savedModel = localStorage.getItem("stt_model") || "base";
       const savedLang = localStorage.getItem("stt_language") || "auto";
+      const savedNotifications = localStorage.getItem("stt_notification_preference") || "auto";
       modelSelect.value = savedModel;
       langSelect.value = savedLang;
+      if (notificationsSelect) notificationsSelect.value = savedNotifications;
+      notificationPreference = savedNotifications;
     } catch (e) {}
 
     function resetCompletionNotice() {
@@ -911,8 +925,14 @@
       completionToast.classList.remove("visible");
     }
 
+    function shouldShowCompletionNotice() {
+      if (notificationPreference === "off") return false;
+      if (notificationPreference === "always") return true;
+      return document.hidden || !document.hasFocus();
+    }
+
     function showCompletionNotice() {
-      if (completionNoticeShown) return;
+      if (completionNoticeShown || !shouldShowCompletionNotice()) return;
       completionNoticeShown = true;
       clearTimeout(completionTitleTimer);
       document.title = "Voice • Done";
@@ -922,17 +942,15 @@
         completionToast.classList.remove("visible");
       }, 6000);
 
-      if ("Notification" in window) {
-        if (Notification.permission === "granted") {
-          try {
-            new Notification("Voice transcription complete", {
-              body: "Your transcript is ready.",
-              icon: "/assets/favicon.png"
-            });
-          } catch (e) {}
-        } else if (Notification.permission === "default") {
-          Notification.requestPermission().catch(() => {});
-        }
+      if ("Notification" in window && Notification.permission === "granted") {
+        try {
+          new Notification("Voice transcription complete", {
+            body: "Your transcript is ready.",
+            icon: "/assets/favicon.png"
+          });
+        } catch (e) {}
+      } else if ("Notification" in window && Notification.permission === "default") {
+        Notification.requestPermission().catch(() => {});
       }
     }
 
@@ -1227,6 +1245,11 @@
 
     langSelect.addEventListener("change", () => {
       localStorage.setItem("stt_language", langSelect.value);
+    });
+
+    notificationsSelect?.addEventListener("change", () => {
+      notificationPreference = notificationsSelect.value;
+      localStorage.setItem("stt_notification_preference", notificationPreference);
     });
 
     // ── Theme settings ──
