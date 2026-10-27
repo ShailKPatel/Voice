@@ -1,7 +1,3 @@
-# Local launchers
-run.bat
-run.command
-run.sh
 
 # Python virtual environments
 .venv/

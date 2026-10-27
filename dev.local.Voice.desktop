@@ -1,0 +1,15 @@
+[Desktop Entry]
+Type=Application
+Name=Voice
+Comment=Offline speech-to-text
+Exec="/home/crusie/3. Code/Projects/local-speech-to-text-main/launch.sh"
+Icon=dev.local.Voice
+Terminal=false
+Categories=Utility;
+StartupNotify=true
+StartupWMClass=dev.local.Voice
+Actions=toggle;
+
+[Desktop Action toggle]
+Name=Start / stop recording
+Exec="/home/crusie/3. Code/Projects/local-speech-to-text-main/launch.sh" --toggle

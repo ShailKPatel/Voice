@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4fc3ff"/>
+      <stop offset="0.5" stop-color="#2563eb"/>
+      <stop offset="1" stop-color="#3b1fa8"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.45" r="0.5">
+      <stop offset="0" stop-color="#9be7ff" stop-opacity="0.75"/>
+      <stop offset="1" stop-color="#9be7ff" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="shine" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="mic" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#dbeafe"/>
+    </linearGradient>
+    <linearGradient id="bars" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e0f7ff"/>
+      <stop offset="1" stop-color="#7dd3fc"/>
+    </linearGradient>
+  </defs>
+  <!-- base with Adwaita-style bottom edge -->
+  <rect x="8" y="12" width="112" height="108" rx="26" fill="#1e1b6b"/>
+  <rect x="8" y="8" width="112" height="108" rx="26" fill="url(#bg)"/>
+  <path d="M34 8 h60 a26 26 0 0 1 26 26 v8 c-30 -14 -82 -14 -112 0 v-8 a26 26 0 0 1 26 -26 z" fill="url(#shine)"/>
+  <!-- glow behind the mic -->
+  <circle cx="64" cy="58" r="40" fill="url(#glow)"/>
+  <!-- equalizer: voice level bars on both sides -->
+  <g fill="url(#bars)">
+    <rect x="17" y="54" width="6" height="16" rx="3" opacity="0.6"/>
+    <rect x="27" y="45" width="6" height="34" rx="3" opacity="0.85"/>
+    <rect x="95" y="45" width="6" height="34" rx="3" opacity="0.85"/>
+    <rect x="105" y="54" width="6" height="16" rx="3" opacity="0.6"/>
+  </g>
+  <!-- microphone -->
+  <rect x="50" y="24" width="28" height="48" rx="14" fill="url(#mic)"/>
+  <g stroke="#93c5fd" stroke-width="2.5" stroke-linecap="round" opacity="0.9">
+    <path d="M57 38 h14 M57 46 h14 M57 54 h14"/>
+  </g>
+  <path d="M40 60 a24 24 0 0 0 48 0" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round"/>
+  <path d="M64 84 v12 M52 98 h24" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round"/>
+</svg>

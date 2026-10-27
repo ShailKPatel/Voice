@@ -1,0 +1,6 @@
+{
+  "uuid": "voice-on-top@local",
+  "name": "Voice: keep on top",
+  "description": "Keeps the local Voice dictation window above other windows on every workspace.",
+  "shell-version": ["45", "46", "47", "48", "49", "50"]
+}
